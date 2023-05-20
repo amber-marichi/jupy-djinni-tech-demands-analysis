@@ -1,3 +1,5 @@
+import aiohttp
+import asyncio
 import re
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -52,4 +54,11 @@ async def parse_vacancy(soup: BeautifulSoup) -> Vacancy:
             config.BASE_URL,
             soup.select_one(".profile[href]")["href"]
         )
+    )
+
+
+async def parse_page(soup: BeautifulSoup) -> list[Vacancy]:
+    vacancies = soup.select(".list-jobs__item")
+    return await asyncio.gather(
+        *[parse_vacancy(vacancy) for vacancy in vacancies]
     )
