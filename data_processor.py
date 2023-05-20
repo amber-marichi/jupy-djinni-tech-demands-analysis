@@ -21,6 +21,7 @@ def get_stopwords() -> set:
     with open("blacklist_UA.txt") as file:
         custom_ua = [line.strip() for line in file.readlines()]
     all_stopwords.update(custom_ua)
+    return all_stopwords
 
 
 def get_tech_count(complete_text: str, count: int) -> list[tuple]:
