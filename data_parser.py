@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 import csv
+import os
 import re
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -68,7 +69,7 @@ async def parse_page(soup: BeautifulSoup) -> list[Vacancy]:
 def write_to_csv(vacancies: list, filename: str) -> None:
     _flatten = sum(vacancies, [])
     _fields = [field.name for field in fields(_flatten[0])]
-    _csv_file_path = os.path.join(config.csv_folder_name, filename)
+    _csv_file_path = os.path.join(config.CSV_FOLDER, filename)
     with open(_csv_file_path, "w") as fw:
         writer = csv.writer(fw)
         writer.writerow(_fields)
