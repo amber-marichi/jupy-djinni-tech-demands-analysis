@@ -62,3 +62,24 @@ async def parse_page(soup: BeautifulSoup) -> list[Vacancy]:
     return await asyncio.gather(
         *[parse_vacancy(vacancy) for vacancy in vacancies]
     )
+
+
+async def parse_main(output_file_name: str) -> None:
+
+    async with aiohttp.ClientSession() as session:
+        _url = urljoin(config.BASE_URL, config.URL_PY)
+        repsonse = await session.get(_url)
+        page = await repsonse.text()
+        page_soup = BeautifulSoup(page, "html.parser")
+        all_pages = [parse_page(page_soup)]
+
+        pagination = page_soup.select_one(".pagination")
+        if pagination:
+            last_page = int(pagination.select("li > a")[-2].text)
+            for i in range(2, last_page + 1):
+                repsonse = await session.get(_url, params={"page": i})
+                page = await repsonse.text()
+                page_soup = BeautifulSoup(page, "html.parser")
+                all_pages.append(parse_page(page_soup))
+
+        results = await asyncio.gather(*all_pages)
