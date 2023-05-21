@@ -3,12 +3,16 @@ import asyncio
 import csv
 import os
 import re
+import locale
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from dataclasses import dataclass, astuple, fields
 from datetime import datetime, date, timedelta
 
 import config
+
+
+locale.setlocale(locale.LC_ALL, "uk_UA.utf8")
 
 
 @dataclass
