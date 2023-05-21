@@ -40,18 +40,21 @@ async def parse_vacancy(soup: BeautifulSoup) -> Vacancy:
     replies = info.pop()
     views = info.pop()
     if info[0] == "сьогодні":
-        real_date = datetime.now()
+        real_date = datetime.today()
     elif info[0] == "вчора":
-        real_date = datetime.now() - timedelta(days=1)
+        real_date = datetime.today() - timedelta(days=1)
     else:
-        real_date = datetime.strptime(" ".join(info), "%d %B")
+        real_date = (
+            datetime.strptime(" ".join(info), "%d %B")
+            .replace(year=datetime.today().year)
+        )
 
     return Vacancy(
         title=(
             soup.select_one(".list-jobs__title").text
             .strip().replace("\n", " ")
         ),
-        posted=real_date.date(),
+        posted=real_date,
         experience=exp,
         views=int(views),
         replies=int(replies),
